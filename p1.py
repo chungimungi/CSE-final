@@ -14,7 +14,8 @@ while True:
 
         fred=turtle.Turtle()
         fred.speed(0)
-        tt.bgcolor("Black")
+        turtle.bgcolor("Black")
+        fred.hideturtle()
 
         colours = ["red","green","blue","yellow","orange","gold","purple","cyan","brown"]
 
@@ -42,32 +43,122 @@ while True:
         print("2. 2D structure")
         chi=int(input("Enter which structure you want to see: "))
         if chi==1:
+            import pygame as pg
+            import numpy as np
+            from math import sin, cos
 
-            from math import cos, sin, pi
+            WIDTH = 800
+            HEIGHT = 1000
 
-            print("The nitrogen bases present in the DNA are:")
-            print("Adenine")
-            print("Cytosine")
-            print("Guanine")
-            print("Thymine")
-            print("They tend to form hydrogen bonds between Adenine and Thymine and Cytosine and Guanine")
+            BLACK = (0, 0, 0)
+            WHITE = (255, 255, 255)
+            GREEN = (0, 255, 0)
+            YELLOW = (255, 255, 0)
+            RED = (255, 0, 0)
+            BLUE = (0, 191, 255)
 
-            length = 50
-            width = 30
-            thickness = 10
-            rotation = 0.15
-            strands = [0, 2 * pi / 3]
-            strand_char = "~"
+            pg.init()
 
-            radius = width / 2
-            for line in range(length):
-                output = [" "] * (width + thickness + 2)
-                total_rotation = -line * rotation
-                sorted_strands = sorted(strands, key=lambda s: cos(total_rotation + s))
-                for strand_offset in sorted_strands:
-                    pos = int(radius * sin(total_rotation + strand_offset) + radius)
-                    output[pos: pos + thickness + 2] = " " + strand_char * thickness + " "
-                print("".join(output))
+            clock = pg.time.Clock()
+            screen = pg.display.set_mode((WIDTH, HEIGHT))
+
+
+            class proj:
+                def __init__(self, width, height):
+                    self.width = width
+                    self.height = height
+                    self.screen = pg.display.set_mode((width, height))
+                    self.background = BLACK
+                    self.surfaces = {}
+
+                def addsurf(self, name, surface):
+                    self.surfaces[name] = surface
+
+                def drcirc(self):
+                    for surface in self.surfaces.values():
+                        for node in surface.nodes:
+                            pg.draw.circle(self.screen, WHITE, (WIDTH / 2 + int(node[0]), int(node[2])), 5)
+
+                def rZ(self, theta):
+                    for surface in self.surfaces.values():
+                        center = surface.findCentre()
+
+                        c = np.cos(theta)
+                        s = np.sin(theta)
+
+                        matrix = np.array([[c, -s, 0, 0],
+                                           [s, c, 0, 0],
+                                           [0, 0, 1, 0],
+                                           [0, 0, 0, 1]])
+
+                        surface.rotate(center, matrix)
+
+
+            class obj:
+                def __init__(self):
+                    self.nodes = np.zeros((0, 4))
+
+                def addnod(self, node_array):
+                    ones_column = np.ones((len(node_array), 1))
+                    ones_added = np.hstack((node_array, ones_column))
+                    self.nodes = np.vstack((self.nodes, ones_added))
+
+                def findCentre(self):
+                    mean = self.nodes.mean(axis=0)
+                    return mean
+
+                def rotate(self, center, matrix):
+                    for i, node in enumerate(self.nodes):
+                        self.nodes[i] = center + np.matmul(matrix, node - center)
+
+                    for m in range(0, 100, 4):
+                        drlin(m, m + 1, self.nodes, GREEN, RED)
+
+                    for m in range(2, 100, 4):
+                        drlin(m, m + 1, self.nodes, YELLOW, BLUE)
+
+
+            def drlin(i, j, k, color1, color2):
+                a = k[i]
+                b = k[j]
+                c = (a[0] + b[0]) / 2
+                pg.draw.line(screen, color1, (WIDTH / 2 + a[0], a[2]), (WIDTH / 2 + c, b[2] - 6), 3)
+                pg.draw.line(screen, color2, (WIDTH / 2 + c, a[2] + 6), (WIDTH / 2 + b[0], b[2]), 3)
+
+
+            helix = []
+
+            for t in range(100):
+                x = round(60 * cos(3 * t), 0)
+                y = round(60 * sin(3 * t), 0)
+                z = 12 * t
+                helix.append((x, y, z))
+
+            spin = 0
+
+            running = True
+            while running:
+
+                clock.tick(60)
+
+                pv = proj(WIDTH, HEIGHT)
+
+                dna = obj()
+                dna_nodes = [i for i in helix]
+                dna.addnod(np.array(dna_nodes))
+
+                pv.addsurf('DNA', dna)
+                pv.rZ(spin)
+                pv.drcirc()
+
+                for event in pg.event.get():
+                    if event.type == pg.QUIT:
+                        running = False
+
+                pg.display.update()
+                spin += 0.02
+            pg.quit()
+                
 
         elif chi==2:
  
