@@ -14,6 +14,7 @@ while True:
 
         fred=turtle.Turtle()
         fred.speed(0)
+        tt.bgcolor("Black")
 
         colours = ["red","green","blue","yellow","orange","gold","purple","cyan","brown"]
 
