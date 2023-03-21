@@ -1,44 +1,13 @@
 while True:
-    print("****OPTION LIST****")
-    print("1.Archimede's Spiral")
-    print("2.DNA Structures")
-    print("3.Spirograph")    
-    print("4.Lissajous Curves")
-    print("5. Exit")
+    print("****Choose the pattern****")
+    print("1.DNA Structures")
+    print("2.Spirograph")    
+    print("3.Lissajous Curves")
+    print("4. Exit")
     choice=int(input("Enter your choice:"))
 
 
     if choice==1:
-        import turtle
-        import random
-
-        fred=turtle.Turtle()
-        fred.speed(0)
-        turtle.bgcolor("Black")
-        fred.hideturtle()
-
-        colours = ["red","green","blue","yellow","orange","gold","purple","cyan","brown"]
-
-        length = 500
-        angle = 91
-        circle_size= 10
-
-        for side in range(length):
-            print(side)
-            colour = random.choice(colours)
-            fred.pencolor(colour)
-            fred.fillcolor(colour)
-            fred.penup
-            fred.forward(side)
-            fred.pendown()
-            fred.left(angle)
-            fred.begin_fill()
-            fred.circle(circle_size)
-            fred.end_fill()
-
-        turtle.exitonclick()
-
-    elif choice==2:
         print("1. 3D structure")
         print("2. 2D structure")
         chi=int(input("Enter which structure you want to see: "))
@@ -217,7 +186,7 @@ while True:
                         "TAATATGC", "ATCGTACG", "CGTAGCAT" ]
             printDNA(DNA, n)
 
-    elif choice==3:
+    elif choice==2:
         print("1. Rosetta Orbit")
         print("2. Basic Spirograph using a square")
         chis=int(input("Enter which one you would like to see:"))
@@ -256,7 +225,7 @@ while True:
                 x=x+1
             exitonclick()
 
-    elif choice==4:
+    elif choice==3:
         import turtle
         from math import cos,sin
         from time import sleep
@@ -292,6 +261,5 @@ while True:
         sleep(0.5)
 
   
-    elif choice==5:
+    elif choice==4:
         break
-
